@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	
+	<bean name="jsonview" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView"/>
+	
+	<!-- Data Source -->
+    <bean id="driverManagerDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        
+        <!-- JDBC 드라이버 클래스명 설정 -->
+        <property name="driverClassName" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+        <!-- JDBC 접속 문자열 설정 -->
+        <property name="url" value="jdbc:sqlserver://localhost:1433;databaseName=board"/>
+        <property name="username" value=""/>
+        <property name="password" value=""/>
+    </bean>
+	
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="driverManagerDataSource" />
+	</bean>
+	
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="driverManagerDataSource"></property>
+		<property name="mapperLocations" value="classpath:com/mobileleader/board/mapper/*.xml" />
+	</bean>
+
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactoryBean" />
+	</bean>
+	
+	<context:annotation-config/>
+	<context:component-scan base-package="com.mobileleader.board.service"/>	
+</beans>
